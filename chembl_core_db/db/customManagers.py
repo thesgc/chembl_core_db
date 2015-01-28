@@ -75,3 +75,8 @@ class CompoundMolsManager(models.Manager, CompoundMolsMixin):
         return CompoundMolsQuerySet(self.model, using=self._db)
 
 #-----------------------------------------------------------------------------------------------------------------------
+
+
+
+# class MoleculeDictionaryMixin(object):
+#     def available_to_user(self, user)
