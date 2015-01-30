@@ -3,6 +3,7 @@ __author__ = 'mnowotka'
 from django.db import models
 from django.db import connections
 from django.db.models.query import QuerySet
+from django.db.models import Q
 
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -78,5 +79,30 @@ class CompoundMolsManager(models.Manager, CompoundMolsMixin):
 
 
 
-# class MoleculeDictionaryMixin(object):
-#     def available_to_user(self, user)
+class MoleculeDictionaryMixin(object):
+    def by_natural_key_public_except_project(self, structure_type, structure_key, chirality, project_id):
+        '''Exclude the given project id from the query set'''
+        return self.filter(  ( Q(structure_type=structure_type) &
+                            Q(structure_key=structure_key) &
+                            Q(chirality=chirality) & 
+                                Q(public=True)) & ~Q(project_id=project_id)
+                                            )
+
+
+    def by_project_and_natural_key(self, structure_type, structure_key, chirality, project_id):
+        '''Get the given structure for that project'''
+        return self.filter(  Q(structure_type=structure_type) &
+                                           Q(structure_key=structure_key) &
+                                           Q(chirality=chirality) &
+                                           Q(project_id=project_id))
+
+
+
+
+class MoleculeDictionaryQuerySet(QuerySet,MoleculeDictionaryMixin):
+    pass
+
+
+class MoleculeDictionaryManager(models.Manager, MoleculeDictionaryMixin):
+    def get_query_set(self):
+        return MoleculeDictionaryQuerySet(self.model, using=self._db)
