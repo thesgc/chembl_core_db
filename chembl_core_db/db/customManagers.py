@@ -80,20 +80,18 @@ class CompoundMolsManager(models.Manager, CompoundMolsMixin):
 
 
 class MoleculeDictionaryMixin(object):
-    def by_natural_key_public_except_project(self, structure_type, structure_key, chirality, project_id):
+    def by_natural_key_public_except_project(self, structure_type, structure_key, project_id):
         '''Exclude the given project id from the query set'''
         return self.filter(  ( Q(structure_type=structure_type) &
                             Q(structure_key=structure_key) &
-                            Q(chirality=chirality) & 
                                 Q(public=True)) & ~Q(project_id=project_id)
                                             )
 
 
-    def by_project_and_natural_key(self, structure_type, structure_key, chirality, project_id):
+    def by_project_and_natural_key(self, structure_type, structure_key, project_id):
         '''Get the given structure for that project'''
         return self.filter(  Q(structure_type=structure_type) &
                                            Q(structure_key=structure_key) &
-                                           Q(chirality=chirality) &
                                            Q(project_id=project_id))
 
 
