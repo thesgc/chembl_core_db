@@ -78,6 +78,9 @@ class CompoundMolsManager(models.Manager, CompoundMolsMixin):
     def get_query_set(self):
         return CompoundMolsQuerySet(self.model, using=self._db)
 
+    def get_queryset(self):
+        return CompoundMolsQuerySet(self.model, using=self._db)
+   
 
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -108,4 +111,7 @@ class MoleculeDictionaryQuerySet(QuerySet,MoleculeDictionaryMixin):
 
 class MoleculeDictionaryManager(models.Manager, MoleculeDictionaryMixin):
     def get_query_set(self):
+        return MoleculeDictionaryQuerySet(self.model, using=self._db)
+    
+    def get_queryset(self):
         return MoleculeDictionaryQuerySet(self.model, using=self._db)
