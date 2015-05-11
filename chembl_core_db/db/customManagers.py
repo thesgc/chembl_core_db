@@ -50,7 +50,7 @@ class CompoundMolsMixin(object):
         if connection.vendor == 'oracle':
             return self.extra(where=["(sss(" + ctab_column + ",%s,'ignore=all')=1)"], params=('smiles:' + structure,))
         if connection.vendor == 'postgresql':
-            return self.extra(where=[ctab_column + "@>%s"], params=(structure,))
+            return self.extra(where=[ctab_column + "@>%s::qmol"], params=(structure,))
         else:
             raise NotImplementedError
 
