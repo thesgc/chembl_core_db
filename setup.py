@@ -21,6 +21,8 @@ setup(
     url='https://www.ebi.ac.uk/chembl/',
     license='Apache Software License',
     packages=['chembl_core_db',
+              'chembl_core_db.migrations',
+
               'chembl_core_db.cache',
               'chembl_core_db.cache.backends',
               'chembl_core_db.db',
