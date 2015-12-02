@@ -7,6 +7,33 @@ from django.db.models import Q
 
 #-----------------------------------------------------------------------------------------------------------------------
 
+def get_smarts(smiles):
+    """
+    Replaces the methyl carbon atoms with a smarts pattern for any carbon atom 
+    """
+    if len(smiles) == 2:
+        return smiles
+    letters = list(smiles)
+    new_letters = []
+    previous = False
+    for index, letter in enumerate(letters):
+        if previous and letter == ")":
+            new_letters[index -1] = "[#6]"
+        if letter == "C":
+            if index == len(smiles) -1 or index == 0:
+                new_letters.append("[#6]")
+                continue
+            else:
+                previous = True
+                new_letters.append(letter)
+                continue
+        previous = False
+        new_letters.append(letter)
+    return "".join(new_letters)
+
+
+
+
 class CompoundMolsMixin(object):
 
     def get_column(self, name):
@@ -50,7 +77,8 @@ class CompoundMolsMixin(object):
         if connection.vendor == 'oracle':
             return self.extra(where=["(sss(" + ctab_column + ",%s,'ignore=all')=1)"], params=('smiles:' + structure,))
         if connection.vendor == 'postgresql':
-            return self.extra(where=[ctab_column + "@>%s::qmol"], params=(structure,))
+            
+            return self.extra(where=[ctab_column + "@>%s::qmol"], params=(get_smarts(structure),))
         else:
             raise NotImplementedError
 
